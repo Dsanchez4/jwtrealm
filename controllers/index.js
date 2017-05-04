@@ -3,26 +3,18 @@ const auth = require("../auth/auth");
 const strgIndex = require("../storage/index");
 
 
-function login(req, res) {
-    let user = req.body.user;
-    let pdw = req.body.pwd;
-    let jwt = auth.createToken({
-        id: "123",
-        user: user
-    });
-    res.send({
-        jwt: jwt
+function saveToken(req, res) {
+    strgIndex.saveToken((err, users) => {
+        if (err) {
+            res.send(err);
+            return;
+        }
+        res.send(users);
     });
 }
 
-function authRoute(req, res) {
-    res.send({
-        jwt: req.user
-    })
-}
-
-function getUsers(req, res) {
-    strgIndex.getUser((err, users) => {
+function getUsertoken(req, res) {
+    strgIndex.getUsertoken((err, users) => {
         if (err) {
             res.send(err);
             return;
@@ -32,7 +24,6 @@ function getUsers(req, res) {
 }
 
 module.exports = {
-    login,
-    authRoute,
-    getUsers
+    saveToken,
+    getUsertoken
 }
