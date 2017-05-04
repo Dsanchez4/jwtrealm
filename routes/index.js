@@ -7,7 +7,7 @@ const mdlAuth = require("../middleware/index");
 index.route("/saveToken")
   .post(ctrlIndex.saveToken);
 
-index.route("/user")
+index.route("/getToken")
   .post(ctrlIndex.getUsertoken);
 
 module.exports = index;

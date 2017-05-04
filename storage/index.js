@@ -3,14 +3,14 @@ const mongojs = require("mongojs");
 const config = require("../config/secret");
 const db = mongojs(config.DB_PATH, ['token']);
 
-function saveToken(callback) {
+function saveToken(data, callback) {
     db.token.findAndModify({
         query: {
-            user: 'mbernedo'
+            user: data.user
         },
         update: {
             $set: {
-                token: 'contraseña'
+                token: data.token
             }
         },
         new: true
@@ -23,10 +23,12 @@ function saveToken(callback) {
     });
 }
 
-function getUsertoken(callback) {
+function getUsertoken(user, callback) {
     db.token.findOne({
-        user: 'mbernedo'
-    },{token : "1"}, function (err, doc) {
+        user: user
+    }, {
+        token: "1"
+    }, function (err, doc) {
         if (err) {
             callback(err);
             return;
