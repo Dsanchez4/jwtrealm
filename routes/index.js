@@ -4,6 +4,9 @@ const ctrlIndex = require("../controllers/index");
 const mdlAuth = require("../middleware/index");
 
 
+index.route("/allUsers")
+  .get(ctrlIndex.listUsers);
+
 index.route("/saveToken")
   .post(ctrlIndex.saveToken);
 

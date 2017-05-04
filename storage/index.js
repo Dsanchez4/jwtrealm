@@ -37,9 +37,19 @@ function getUsertoken(user, callback) {
     })
 }
 
+function listUsers(callback) {
+    db.token.find(function (err, docs) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, docs);
+    });
+}
 
 
 module.exports = {
     saveToken,
-    getUsertoken
+    getUsertoken,
+    listUsers
 }

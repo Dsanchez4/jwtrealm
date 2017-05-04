@@ -106,7 +106,18 @@ function sendMenssage(req, res) {
 
 }
 
+function listUsers(req, res) {
+    strgIndex.listUsers((err, data) => {
+        if (err) {
+            res.send(err);
+            return;
+        }
+        res.send(data);
+    });
+}
+
 module.exports = {
     saveToken,
-    sendMenssage
+    sendMenssage,
+    listUsers
 }
