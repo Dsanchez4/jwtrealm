@@ -7,7 +7,7 @@ const mdlAuth = require("../middleware/index");
 index.route("/saveToken")
   .post(ctrlIndex.saveToken);
 
-index.route("/getToken")
-  .post(ctrlIndex.getUsertoken);
+index.route("/sendMessage")
+  .post(ctrlIndex.sendMenssage);
 
 module.exports = index;
