@@ -47,6 +47,7 @@ function getUsertoken(user, callback) {
 
 function sendMenssage(req, res) {
     var user = req.body.user;
+    
     getUsertoken(user, (err, data) => {
         /*request.post({
                 url: 'https://fcm.googleapis.com/fcm/send',
@@ -86,8 +87,8 @@ function sendMenssage(req, res) {
                 data: {
                     "to": data.token,
                     "notification": {
-                        "title": "SecurityApp",
-                        "body": "Se ingreso una nuevo token"
+                        "title": req.body.titulo,
+                        "body": req.body.cuerpo
                     },
                     "data": {
                         "titulo": "Este es el titular",
