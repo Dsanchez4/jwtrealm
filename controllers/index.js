@@ -5,7 +5,16 @@ const axios = require('axios');
 const moment = require("moment");
 const validate = require("../suport/validate");
 const strgIndex = require("../storage/index");
-const geolib = require("geolib");
+const Promise = require("promise");
+const geolib = require("../suport/geolib");
+const Incidence = require("../suport/incidence");
+
+function ErrorHandler(res, msg) {
+    res.send({
+        cod: 0,
+        msg: msg
+    });
+}
 
 function registerUser(req, res) {
     if (!validate.regUser(req.body)) {
@@ -18,10 +27,7 @@ function registerUser(req, res) {
     strgIndex.findUserByUser(req.body.usuario,
         (err, data) => {
             if (err) {
-                res.send({
-                    cod: 0,
-                    msg: "Error bd"
-                });
+                ErrorHandler(res, "ERROR BD");
                 return;
             }
             if (data) {
@@ -33,8 +39,7 @@ function registerUser(req, res) {
             }
             strgIndex.saveUser(req.body, (err, data) => {
                 if (err) {
-                    console.log(err);
-                    res.send("mal");
+                    ErrorHandler(res, "ERROR BD");
                     return;
                 }
                 console.log(data);
@@ -60,10 +65,7 @@ function registerIncidence(req, res) {
     incidence.revisado = 0;
     strgIndex.saveIncidece(incidence, (err, data) => {
         if (err) {
-            res.send({
-                cod: 0,
-                msg: "Error BD"
-            });
+            ErrorHandler(res, "ERROR BD");
             return;
         }
         res.send({
@@ -73,15 +75,58 @@ function registerIncidence(req, res) {
     });
 }
 
-function test() {
-    return geolib.getDistanceSimple({
-        latitude: -12.093636,
-        longitude: -76.982162
-    }, {
-        latitude: -12.094412,
-        longitude: -76.981277
-    });
+function login(req, res) {
+    var user = req.body.usuario;
+    var pwd = req.body.pwd;
+    if (!(user && pwd)) {
+        res.send({
+            cod: 9,
+            msg: "Completar datos"
+        })
+        return
+    }
+    Promise.all(
+        [
+            new Promise((rs, rj) => {
+                strgIndex.findUserForLogin({
+                    user: user,
+                    pwd: pwd
+                }, (err, data) => {
+                    if (err) {
+                        rj(err);
+                        return
+                    }
+                    rs(data);
+                });
+            }),
+            new Promise((rs, rj) => {
+                strgIndex.findAllIncidence((err, data) => {
+                    if (err) {
+                        rj(err);
+                        return
+                    }
+                    rs(data);
+                });
+            })
+        ]).then((ress) => {
+            if (!ress[0]) {
+                res.send({
+                    cod: 2,
+                    msg: "Usuario no encontrado"
+                })
+                return
+            }
+            res.send({
+                usuario: ress[0],
+                incidencias: ress[1]
+            })
+
+        }).catch((errr) => {
+            ErrorHandler(res, "ERROR BD");
+        });
 }
+
+
 
 /*
 function saveToken(req, res) {
@@ -170,7 +215,22 @@ function listUsers(req, res) {
 }
 */
 
+function test(req, res) {
+    var pos = { lat: -12.1210146, lon: -76.9932693 }
+    strgIndex.findAllIncidence((err, data) => {
+        if (err) {
+            res.send("error")
+            return
+        }
+        Incidence.getListIncidence(100, pos, data);
+        res.send("ok");
+    });
+
+}
+
 module.exports = {
     registerUser,
-    registerIncidence
+    registerIncidence,
+    login,
+    test
 }

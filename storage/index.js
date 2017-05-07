@@ -1,7 +1,7 @@
 'user strict';
 const mongojs = require("mongojs");
 const config = require("../config/secret");
-const db = mongojs(config.DB_PATH, ['token']);
+const db = mongojs(config.DB_PATH, ['token', 'incidencias', 'usuarios']);
 
 function saveUser(user, callback) {
     db.usuarios.save(user, (err, data) => {
@@ -22,7 +22,7 @@ function findUserByUser(user, callback) {
             return;
         }
         callback(null, doc);
-    })
+    });
 }
 
 function saveIncidece(incidence, callback) {
@@ -34,6 +34,31 @@ function saveIncidece(incidence, callback) {
         callback(null, data);
     });
 }
+
+function findAllIncidence(callback) {
+    db.incidencias.find(function (err, doc) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, doc);
+    });
+}
+
+function findUserForLogin(user, callback) {
+    db.usuarios.findOne({
+        usuario: user.user,
+        pwd: user.pwd
+    }, function (err, doc) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, doc);
+    });
+}
+
+
 
 /*
 function saveToken(data, callback) {
@@ -85,5 +110,7 @@ function listUsers(callback) {
 module.exports = {
     saveUser,
     findUserByUser,
-    saveIncidece
+    saveIncidece,
+    findAllIncidence,
+    findUserForLogin
 }
