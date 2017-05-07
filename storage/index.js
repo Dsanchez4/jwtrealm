@@ -3,6 +3,39 @@ const mongojs = require("mongojs");
 const config = require("../config/secret");
 const db = mongojs(config.DB_PATH, ['token']);
 
+function saveUser(user, callback) {
+    db.usuarios.save(user, (err, data) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, data);
+    });
+}
+
+function findUserByUser(user, callback) {
+    db.usuarios.findOne({
+        usuario: user
+    }, function (err, doc) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, doc);
+    })
+}
+
+function saveIncidece(incidence, callback) {
+    db.incidencias.save(incidence, (err, data) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, data);
+    });
+}
+
+/*
 function saveToken(data, callback) {
     db.token.findAndModify({
         query: {
@@ -46,10 +79,11 @@ function listUsers(callback) {
         callback(null, docs);
     });
 }
+*/
 
 
 module.exports = {
-    saveToken,
-    getUsertoken,
-    listUsers
+    saveUser,
+    findUserByUser,
+    saveIncidece
 }
