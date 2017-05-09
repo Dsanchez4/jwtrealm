@@ -126,7 +126,19 @@ function login(req, res) {
         });
 }
 
+function getAllIncidence(ree, res) {
 
+    strgIndex.findAllIncidence((err , data) => {
+        if(err){
+            ErrorHandler(res, "ERROR BD");
+            return;
+        }
+        res.send({
+            cod  : 1 ,
+            data : data
+        });
+    });
+}
 
 /*
 function saveToken(req, res) {
@@ -232,5 +244,6 @@ module.exports = {
     registerUser,
     registerIncidence,
     login,
-    test
+    test,
+    getAllIncidence
 }

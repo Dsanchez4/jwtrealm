@@ -59,7 +59,6 @@ function findUserForLogin(user, callback) {
 }
 
 
-
 /*
 function saveToken(data, callback) {
     db.token.findAndModify({

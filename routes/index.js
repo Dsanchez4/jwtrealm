@@ -14,6 +14,10 @@ index.route("/registerUser")
 index.route("/regiterIncidence")
   .post(ctrlIndex.registerIncidence);
 
+index.route("/allIncidence")
+  .get(ctrlIndex.getAllIncidence);
+  
+
 
 /*
 index.route("/allUsers")
